@@ -1,7 +1,9 @@
 const path = require("path");
+const os = require("os");
 const dotenv = require("dotenv");
 
-dotenv.config();
+dotenv.config({ path: path.join(os.homedir(), ".config", "gmgn", ".env") });
+dotenv.config({ override: true });
 
 function readNumber(name, fallback) {
   const value = process.env[name];
@@ -30,26 +32,35 @@ const config = {
   dryRun:
     String(process.env.DRY_RUN || "").toLowerCase() === "true" ||
     process.argv.includes("--dry-run"),
-  timeframes: ["1m", "5m"],
-  gmgnApiBaseUrl: "https://gmgn.ai/defi/quotation/v1/rank/sol/swaps",
-  gmgnTrendingBaseUrl: "https://gmgn.ai/trend?chain=sol",
-  gmgnBrowserApiBaseUrl: "https://gmgn.ai/api/v1/rank/sol/swaps",
+  timeframes: String(process.env.GMGN_INTERVALS || "5m,1h")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean),
+  gmgnApiKey: process.env.GMGN_API_KEY || "",
+  gmgnApiHost: process.env.GMGN_API_HOST || "https://openapi.gmgn.ai",
+  gmgnChain: process.env.GMGN_CHAIN || "sol",
+  gmgnRankLimit: readNumber("GMGN_RANK_LIMIT", 100),
+  gmgnRequestTimeoutMs: readNumber("GMGN_REQUEST_TIMEOUT_MS", 15000),
   gmgnTokenBaseUrl: "https://gmgn.ai/sol/token",
-  retryAttempts: 3,
+  retryAttempts: readNumber("GMGN_RETRY_ATTEMPTS", 3),
+  kolHoldersLimit: readNumber("GMGN_KOL_HOLDERS_LIMIT", 30),
   userDataDir: path.join(process.cwd(), ".puppeteer-cache"),
 };
 
 function validateConfig() {
-  if (config.dryRun) {
-    return;
+  const missing = [];
+
+  if (!config.gmgnApiKey) {
+    missing.push("GMGN_API_KEY");
   }
 
-  const missing = [];
-  if (!config.discordToken) {
-    missing.push("DISCORD_TOKEN");
-  }
-  if (!config.discordChannelId) {
-    missing.push("DISCORD_CHANNEL_ID");
+  if (!config.dryRun) {
+    if (!config.discordToken) {
+      missing.push("DISCORD_TOKEN");
+    }
+    if (!config.discordChannelId) {
+      missing.push("DISCORD_CHANNEL_ID");
+    }
   }
 
   if (missing.length > 0) {

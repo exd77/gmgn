@@ -1,9 +1,5 @@
 const METEORA_GROUPS_API = "https://dlmm.datapi.meteora.ag/pools/groups";
-
-function log(level, message) {
-  const prefix = `[${new Date().toISOString()}] [${level.toUpperCase()}]`;
-  console.log(`${prefix} ${message}`);
-}
+const { log } = require("./logger");
 
 function formatUsd(val) {
   const num = parseFloat(val);
