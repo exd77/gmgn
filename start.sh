@@ -51,9 +51,9 @@ print_summary() {
 "🧭 Runtime         : Node $(node -v 2>/dev/null || echo N/A)"
 "📦 Package manager : npm $(npm -v 2>/dev/null || echo N/A)"
 "🎯 Mode            : ${mode}"
-"⏱️  Check interval  : ${CHECK_INTERVAL_MS:-30000} ms"
+"⏱️ Check interval  : ${CHECK_INTERVAL_MS:-30000} ms"
 "📊 Filters         : MC>=${MIN_MARKET_CAP:-200000} | Vol1h>=${MIN_VOLUME_1H:-50000} | Fees>=${MIN_TOTAL_FEES_SOL:-20} SOL | Holders>=${MIN_HOLDERS:-500}"
-"🛰️  Intervals       : ${GMGN_INTERVALS:-5m,1h}"
+"🛰️ Intervals       : ${GMGN_INTERVALS:-5m,1h}"
 "📣 Discord channel : ${DISCORD_CHANNEL_ID:-<unset>}"
 "────────────────────────────────────────────────────────────"
   )
